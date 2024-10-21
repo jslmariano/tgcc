@@ -28,12 +28,12 @@ Follow these steps to set up and run the project on your local machine using **D
 3. Build and start the containers using Docker Compose:
 
    ```bash
-   docker-compose up --build
+   docker-compose up -d --build
    ```
 
 4. Access the application:
-   - Navigate to [http://localhost:3000](http://localhost:3000) for the app.
-   - API endpoints are available at [http://localhost:4002](http://localhost:4002).
+   - Navigate to [http://localhost:7309](http://localhost:7309) for the app.
+   - API endpoints are available at [http://localhost:7308](http://localhost:7308).
 
 ## Project Structure
 
@@ -50,8 +50,8 @@ project-root/
 
 The application uses JSON Server to provide mock API endpoints for products:
 
-- `GET http://localhost:4002/products`: Get the full list of products.
-- `GET http://localhost:4002/products/search?q={substring}`: Search for products by name.
+- `GET http://localhost:7308/products`: Get the full list of products.
+- `GET http://localhost:7308/products/search?q={substring}`: Search for products by name.
 
 ## Tech Stack
 
