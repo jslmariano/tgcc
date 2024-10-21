@@ -1,0 +1,6 @@
+FROM node:20.5.1
+WORKDIR /app
+COPY server.json /app/server.json
+RUN npm install -g npm@10.8.2
+RUN npm install -g json-server@0.17.4
+CMD ["json-server", "--watch", "--port", "3000",  "--delay", "1500", "--host", "0.0.0.0", "/app/server.json"]

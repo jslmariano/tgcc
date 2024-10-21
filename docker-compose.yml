@@ -1,0 +1,83 @@
+version: "3.4"
+
+####################
+#### EXTENSIONS ####
+####################
+x-default-logging: &default-logging
+  logging:
+    options:
+      max-size: "1G"
+      max-file: "3"
+    driver: json-file
+
+x-network-default: &network-default
+  networks:
+    - default
+
+x-common-variables: &common-variables
+  docker: "true"
+  CERT_NAME: "default"
+  VIRTUAL_PORT: "80"
+  VIRTUAL_PROTO: "http"
+  # HTTPS_METHOD: nohttps
+  LOG_STDOUT: ${WEBDEVOPS_WEB_LOG_STDOUT}
+  LOG_STDERR: ${WEBDEVOPS_WEB_LOG_STDERR}
+
+volumes:
+  node_modules:
+
+####################
+#### NETWORKS ######
+####################
+networks:
+  proxy-tier_nginx:
+    external: true
+  database-tier_backend:
+    external: true
+
+####################
+#### SERVICES ######
+####################
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tgcc
+      MYSQL_USER: tgcc
+      MYSQL_PASSWORD: tgcc
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - database-tier_backend
+
+  ### TGCC-API  ########################################
+  tgcc-api:
+    container_name: tgcc-api
+    image: jslmariano/tgcc-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    volumes:
+      - ./api:/app
+    ports:
+      - "7308:80"
+    environment:
+      <<: *common-variables
+      VIRTUAL_HOST: tgcc-api.jslmariano.com
+    <<: [*default-logging, *network-default]
+
+  ### TGCC-web  ########################################
+  tgcc-web:
+    container_name: tgcc-web
+    image: jslmariano/tgcc-web
+    ports:
+      - "7309:80"
+    environment:
+      <<: *common-variables
+      VIRTUAL_HOST: tgcc-web.jslmariano.com
+    <<: [*default-logging, *network-default]
